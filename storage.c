@@ -123,24 +123,42 @@ int str_backupSystem(char* filepath) {
 int str_createSystem(char* filepath) { 
 
     FILE *fp; 
-    fp = fopen(filepath, "r"); 
-    storage_t **fp;
+    int i,j;
+    int x, y;
+    char c;
+    struct storage_t **deliverySystem;
     
-    if (fp == NULL) 
-       return -1; 
+    fp = fopen(filepath, "r"); 
+    
+    if (fp == NULL)
+	{
+	   return -1; 	
+	} 
+       
 	  
-	deliverySystem.building = (storage_t**)malloc(sizeof(static storage_*t));  
-	deliverySystem.room = (storage_t**)malloc(3sizeof(static storage_t*));  
-	deliverySystem.passwd = (storage_t**)malloc(4sizeof(static storage_t*));  
+	deliverySystem = (storage_t **)malloc(systemSize[0]*sizeof(struct storage_t *));  
 	
-	fscanf(fp, "%d %d", systemSize[2]);
+	for(i=0;i<systemSize[0];i++)
+	{
+		//for(j=0;j<6;j++)
+		//{
+			deliverySystem[i] = (storage_t *)malloc(systemSize[1]*sizeof(storage_t ));
+		//}
+	}
+	
+	
+	fscanf(fp, "%d %d", &systemSize[0],&systemSize[1]);
 	fscanf(fp, "%s", masterPassword[PASSWD_LEN+1]);
-	fscanf(fp, "%s", deliverySystem);
+	//fscanf(fp, "%s", deliverySystem);
+	while(( c=fgetc(fp))!=EOF)
+	{
+		fscanf(fp,"%d %d ",&x,&y);
+		fscanf(fp,"%d %d %s %s",&deliverySystem[x][y].building,&deliverySystem[x][y].room,deliverySystem[x][y].passwd,deliverySystem[x][y].context);
+	}
 	
-	
+		
 	return 0;
       
-
 } 
 
 //free the memory of the deliverySystem 
@@ -219,11 +237,11 @@ int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char msg[MAX_MSG_S
 
 
 
-deliverySystem[x][y].building = nBuilding; 
-deliverySystem[x][y].room = nRoom; 
-deliverySystem[x][y].passwd[PASSWD_LEN+1] = passwd[PASSWD_LEN+1];    
-deliverySystem[x][y].context = msg[MAX_MSG_SIZE+1];    
-deliverySystem[x][y].cnt = 1; 
+    deliverySystem[x][y].building = nBuilding; 
+    deliverySystem[x][y].room = nRoom; 
+    deliverySystem[x][y].passwd[PASSWD_LEN+1] = passwd[PASSWD_LEN+1];    
+    deliverySystem[x][y].context = msg[MAX_MSG_SIZE+1];    
+    deliverySystem[x][y].cnt = 1; 
 
 
 
