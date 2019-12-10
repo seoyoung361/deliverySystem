@@ -69,14 +69,13 @@ static int inputPasswd(int x, int y) {
 	
 	printf(" input password for (%d, %d) storage : ", x, y);    //input password
 	scanf("%4s", &passwd);                                      
-	//fflush(stdin);
 	
-	if(strcmp(passwd, deliverySystem[x][y].passwd) == 0 || strcmp(masterPassword, deliverySystem[x][y].passwd)==0)         //if password is matching --- return 0
+	if(strcmp(passwd, deliverySystem[x][y].passwd) == 0 || strcmp(masterPassword, deliverySystem[x][y].passwd)==0)    //if password is matching --- return 0
 	{      		
 	   return 0;		
 	} 
 	
-	else                                                       //password is not matching --- return -1
+	else   //password is not matching --- return -1
 	{	
 	   return -1;
 	}
@@ -91,12 +90,12 @@ static int inputPasswd(int x, int y) {
 int str_backupSystem(char* filepath) {
 
 	FILE *fp;
-	fp = fopen(filepath, "w"); //open file
+	fp = fopen(filepath, "w");  //open file
 	
 	int i, j;
 	
-	fprintf(fp, "%d %d\n", systemSize[0], systemSize[1]);
-	fprintf(fp, "%s\n", masterPassword);
+	fprintf(fp, "%d %d %s \n", systemSize[0], systemSize[1], masterPassword);   //
+	//fprintf(fp, "%s\n", masterPassword);
 
 	for(i=0; i<systemSize[0]; i++) 
 	{
