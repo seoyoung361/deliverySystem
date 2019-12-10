@@ -80,10 +80,10 @@ static void initStorage(int x, int y) {
 //return : 0 - password is matching, -1 - password is not matching 
 static int inputPasswd(int x, int y) { 
 
-     char PW; 
+    char PW; 
 
-      printf("input password for (%d, %d) storage: ", x, y); 
-      scanf("%s", &PW); 
+    printf("input password for (%d, %d) storage: ", x, y); 
+    scanf("%s", &PW); 
 
     if(deliverySystem[x][y].passwd[PASSWD_LEN+1] == PW) 
       return 0; 
@@ -106,7 +106,6 @@ static int inputPasswd(int x, int y) {
 int str_backupSystem(char* filepath) { 
 
     FILE *fp; 
-
     fp = fopen(filepath, "w"); 
 
 
@@ -123,7 +122,7 @@ int str_backupSystem(char* filepath) {
 int str_createSystem(char* filepath) { 
 
     FILE *fp; 
-    int i,j;
+    int i;
     int x, y;
     char c;
     struct storage_t **deliverySystem;
@@ -149,7 +148,7 @@ int str_createSystem(char* filepath) {
 	
 	fscanf(fp, "%d %d", &systemSize[0],&systemSize[1]);
 	fscanf(fp, "%s", masterPassword[PASSWD_LEN+1]);
-	//fscanf(fp, "%s", deliverySystem);
+	
 	while(( c=fgetc(fp))!=EOF)
 	{
 		fscanf(fp,"%d %d ",&x,&y);
