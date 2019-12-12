@@ -65,12 +65,12 @@ static void initStorage(int x, int y) {
 //return : 0 - password is matching, -1 - password is not matching
 static int inputPasswd(int x, int y) {
 
-	char passwd[PASSWD_LEN+1]; //user input password
+	char getpw[PASSWD_LEN+1]; //user input password
 	
 	printf(" input password for (%d, %d) storage : ", x, y);    //input password
-	scanf("%4s", &passwd);                                      
+	scanf("%4s", &getpw);                                      
 	
-	if(strcmp(passwd, deliverySystem[x][y].passwd) == 0 || strcmp(masterPassword, deliverySystem[x][y].passwd)==0)    //if password is matching --- return 0
+	if(strcmp( getpw, deliverySystem[x][y].passwd ) == 0 || strcmp( getpw, masterPassword )==0)    //if password is matching --- return 0
 	{      		
 	   return 0;		
 	} 
@@ -88,29 +88,37 @@ static int inputPasswd(int x, int y) {
 //char* filepath : filepath and name to write
 //return : 0 - backup was successfully done, -1 - failed to backup
 int str_backupSystem(char* filepath) {
-
+	
 	FILE *fp;
 	fp = fopen(filepath, "w");  //open file
 	
 	int i, j;
 	
-	fprintf(fp, "%d %d %s \n", systemSize[0], systemSize[1], masterPassword);   //
-	//fprintf(fp, "%s\n", masterPassword);
+	if (fp!=NULL){           //if file is opend
+	
+	    fprintf(fp, "%d %d\n ", systemSize[0], systemSize[1] );   // print at file
+	    fprintf(fp, "%s\n", masterPassword);
 
-	for(i=0; i<systemSize[0]; i++) 
-	{
-		for(j=0; j<systemSize[1]; j++) 
-		{		
-			if (deliverySystem[i][j].cnt > 0) 
-			{			
-				fprintf(fp, "%d %d %d %d %s %s\n", i, j, deliverySystem[i][j].building, deliverySystem[i][j].room, deliverySystem[i][j].passwd, deliverySystem[i][j].context);
-			}
-		}
-	}
+	    for(i=0; i<systemSize[0]; i++)  //print at file
+	    {
+		   for(j=0; j<systemSize[1]; j++) 
+		   {		
+			    if (deliverySystem[i][j].cnt > 0) 
+			    { 			
+				    fprintf(fp, "%d %d %d %d %s %s\n", i, j, deliverySystem[i][j].building, deliverySystem[i][j].room, deliverySystem[i][j].passwd, deliverySystem[i][j].context);
+			    }
+		   }
+	    }
 
-	fclose(fp);
+     	fclose(fp);
 
-	return 0;
+     	return 0;
+     }
+     
+	if(fp=NULL)    //if file is not opened
+	   {
+	     return -1;
+       }
 }
 
 
@@ -129,7 +137,7 @@ int str_createSystem(char* filepath) {
 	{
 
 		fscanf(fp, "%d %d", &systemSize[0], &systemSize[1]);
-		fscanf(fp, "%s", &masterPassword);	  // scan row, column, masterpassword from file 
+		fscanf(fp, "%s", masterPassword);	  // scan row, column, masterpassword from file 
 
 		deliverySystem = (storage_t **) malloc(systemSize[0] *sizeof(storage_t *));  //allocate memory of row		
 		for(i=0; i<systemSize[0]; i++) 
@@ -146,10 +154,10 @@ int str_createSystem(char* filepath) {
 			}
 		}
 
-	    while(( c=fgetc(fp))!=EOF)    
+	    while(( c=fgetc(fp))!=EOF)   
 		{
 			storage_t storage = { .context = (char*)malloc(sizeof(char) * (MAX_MSG_SIZE + 1)) };
-			int x = -1, y = -1; // reset x,y with number that never can be 
+			int x = -100, y = -100; // reset x,y with number that never can be 
 			
 			fscanf(fp, "%d %d %d %d %s %s", &x, &y, &storage.building, &storage.room, &storage.passwd, storage.context);
 
@@ -168,7 +176,7 @@ int str_createSystem(char* filepath) {
 		return -1;  //failed to create system
 
 
-	return 0;
+	return 0;	
 }
 
 //free the memory of the deliverySystem 
@@ -245,19 +253,17 @@ int str_checkStorage(int x, int y) {
 //return : 0 - successfully put the package, -1 - failed to put
 int str_pushToStorage(int x, int y, int nBuilding, int nRoom, char msg[MAX_MSG_SIZE+1], char passwd[PASSWD_LEN+1]) {
 	
-	//initStorage(x, y);
-	if(deliverySystem[x][y].cnt==0)
-	{
-		
-	deliverySystem[x][y].building = nBuilding;
-	deliverySystem[x][y].room = nRoom;
-	strcpy(deliverySystem[x][y].passwd, passwd);
-	deliverySystem[x][y].context = msg;
-	deliverySystem[x][y].cnt = sizeof(deliverySystem[x][y].context);
-	
-	return 0;
-	
-	storedCnt++;                        //plus the storage_cnt
+	if(deliverySystem[x][y].cnt==0) // coordinate of the cell to put the package
+	{		
+	   deliverySystem[x][y].building = nBuilding;
+	   deliverySystem[x][y].room = nRoom;
+	   strcpy(deliverySystem[x][y].passwd, passwd);
+	   deliverySystem[x][y].context = msg;
+	   deliverySystem[x][y].cnt = sizeof(deliverySystem[x][y].context);
+
+       storedCnt++;   //plus the storage_cnt
+	   
+	   return 0;	
     }
     
 	else if(deliverySystem[x][y].cnt > 0)   //return : 0 - successfully put the package, -1 - failed to put
